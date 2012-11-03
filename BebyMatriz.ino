@@ -227,7 +227,7 @@ void nuevoTexto(){
  while( Serial.available() > 0 ){
    texto[posicion] = Serial.read();
    posicion++;
-   if( Serial.available() == 0){ 
+   if(Serial.available() == 0){ 
      texto[posicion] = '\n';
      }
    }
