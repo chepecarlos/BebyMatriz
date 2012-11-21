@@ -1,3 +1,5 @@
+#include <EEPROM.h>
+
 #define LEDMAT_SERIAL_DATA 8
 #define LEDMAT_SHIFT_CLOCK 2
 #define LEDMAT_LATCH_CLOCK 9
@@ -180,7 +182,8 @@ const int anchoCaracter[30] = {
 //0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26
 };
 //ABCDEFGHIJKLMNOPQRSTUVWXYZ
-char texto[256] = "LINUX ALSW\n";
+char texto[256] = "Error\n";
+int LongitudTexto = 1;
 boolean pantalla[5][20];
 
 void setup () {
@@ -201,7 +204,27 @@ char letra;
   Serial.print(letra);
   Serial.println(letra, DEC);
   }
-  */
+  */ 
+  //EEPROM.write(LongitudTexto, 1);
+  int Longitud = EEPROM.read(LongitudTexto);
+  Serial.print("Longitud: ");
+  Serial.println(Longitud);
+  if(Longitud <= 0 || Longitud >= 256){
+       texto[0] = 'A';
+       texto[1] = '\n';
+       EEPROM.write(LongitudTexto, 1);
+       EEPROM.write(LongitudTexto+1 ,'A'); 
+       
+  }
+  else{
+    int i;
+    for(i = 0; i< Longitud ;i++){
+     texto[i] = EEPROM.read(LongitudTexto + i + 1);
+     Serial.print(texto[i]);
+    }
+    texto[i+1] = '\n';
+    Serial.println();
+  }  
 }
 
 void loop () {
@@ -223,14 +246,20 @@ void loop () {
 }
 
 void nuevoTexto(){
-  int posicion = 0;
+ int posicion = 0;
  while( Serial.available() > 0 ){
    texto[posicion] = Serial.read();
+   EEPROM.write(LongitudTexto+posicion+1, texto[posicion]);
    posicion++;
    if(Serial.available() == 0){ 
      texto[posicion] = '\n';
+     
      }
    }
+   EEPROM.write(LongitudTexto,posicion); 
+   for(int i = 0;i<5;i++)
+      for(int j = 0;j<20;j++)
+       pantalla[i][j] = 0;
 }
 
 int posicionTexto(char caracter){
