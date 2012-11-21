@@ -277,7 +277,6 @@ void SuperTexto(){
     pos = -20;
     do{
      Lila = random(2, Estados+1);
-       Serial.println(Lila);
     }
     while( PLila == Lila);
       PLila = Lila;  
@@ -356,8 +355,8 @@ void SuperModulo(){
 
 void Barrido(){
   Frecuencia = 0;
-  float t0 = millis();
-  float t1 = t0;
+//  float t0 = millis();
+//  float t1 = t0;
   int k,i,j;
   i = 0;
   j = 0;
@@ -368,26 +367,34 @@ void Barrido(){
        pantalla[i][j] = 0;
     }
   }
+  v = 1;
   pantalla[0][0] = 1;
-  i = 0;
+  do{
+  i = k;
   j = 0;
   do{
-   if( (i+j) == k)
-     if( v > 0)
-      pantalla[i][j] = 1;
+    if( i < 20 and i >= 0){
+    if( v > 0)
+      pantalla[j][i] = 1;
      else
-      pantalla[i][j] = 0;
-   i++;
-    if(i >= 5 ){ i = 0; j++;}
-    if(j >= 20 ) {
-      j= 0;
-      k = k+v;
-      if( k > 23)
-        v = -v;
-    } 
-    actualizarMatriz();
-    } 
-    while(k != -1);
+      pantalla[j][i] = 0;
+    }
+    i--;
+    j++;
+  }while(j<5 );
+  k = k + v;
+  for(byte p = 0;p<15;p++)
+      actualizarMatriz();
+  
+  if( k > 23)
+  v = -v;
+  }while(k != -1);
+  
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+       pantalla[i][j] = 0;
+    }
+  }
     Frecuencia = 1;
     Lila = 1;
 }
@@ -510,6 +517,7 @@ void enviarFila(byte nFila) {
     digitalWrite(LEDMAT_SHIFT_CLOCK, HIGH);
   }
 
+
   digitalWrite(LEDMAT_FILA_0, LOW);
   digitalWrite(LEDMAT_FILA_1, LOW);
   digitalWrite(LEDMAT_FILA_2, LOW);
@@ -522,18 +530,23 @@ void enviarFila(byte nFila) {
   switch (nFila) {
   case 0:
     digitalWrite(LEDMAT_FILA_0, HIGH);
+   // digitalWrite(LEDMAT_FILA_0, LOW);
     break;
   case 1:
     digitalWrite(LEDMAT_FILA_1, HIGH);
+   // digitalWrite(LEDMAT_FILA_1, LOW);
     break;
   case 2:
     digitalWrite(LEDMAT_FILA_2, HIGH);
+   // digitalWrite(LEDMAT_FILA_2, LOW);
     break;
   case 3:
     digitalWrite(LEDMAT_FILA_3, HIGH);
+   // digitalWrite(LEDMAT_FILA_3, LOW);
     break;
   case 4:
     digitalWrite(LEDMAT_FILA_4, HIGH);
+   // digitalWrite(LEDMAT_FILA_4, LOW);
     break;
   }
 }
