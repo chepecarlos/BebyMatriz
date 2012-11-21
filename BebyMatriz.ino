@@ -185,6 +185,13 @@ const int anchoCaracter[30] = {
 char texto[256] = "Error\n";
 int LongitudTexto = 1;
 boolean pantalla[5][20];
+static byte Lila = 4;
+static int pos = -20;
+static byte PLila = 1;
+static byte Estados = 4;
+float Frecuencia = 1;
+static int  Retraso = 2;
+
 
 void setup () {
   pinMode(LEDMAT_SERIAL_DATA, OUTPUT);
@@ -198,6 +205,7 @@ void setup () {
   pinMode(LEDMAT_FILA_4, OUTPUT);
 
   Serial.begin(9600);
+  
   /*
 char letra;
   for( letra = 'A'; letra <= 'a'; letra++){
@@ -228,22 +236,162 @@ char letra;
 }
 
 void loop () {
-  int i;
-  static int pos = -20;
   
-  for (i=0; i<20; i++) {
-    dibujarTexto(pos);
-    actualizarMatriz();
-  }
-  if(Serial.available() >0 ){
-    nuevoTexto();
-    pos = -20;
+  switch(Lila){
+   case 1:
+     SuperTexto();
+   break;
+   case 2:
+    DiscoDisco();
+   break;
+   case 3:
+    SuperModulo();
+   break;
+   case 4:
+    Barrido();
+   break;
+   default:  
+     Lila = 1;
+   break;
   }
   
-
-  pos++;
-  if (pos >= longitudTexto()) pos = -20;
+   if(Serial.available() >0 ){
+     nuevoTexto();
+     pos = -20;
+     Frecuencia = 1;
+   }
+  
 }
+
+void SuperTexto(){
+  byte i;
+   static int pos = -20;
+  
+   for (i=0; i<20; i++) {
+     dibujarTexto(pos);
+     actualizarMatriz();
+   }
+  
+  pos++;
+  if (pos >= longitudTexto()) {
+    pos = -20;
+    do{
+     Lila = random(2, Estados+1);
+       Serial.println(Lila);
+    }
+    while( PLila == Lila);
+      PLila = Lila;  
+  }
+}
+
+void DiscoDisco(){
+   byte i, j, k;
+   double time = millis();
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+      if( (i+j) % 2 == 0)
+       pantalla[i][j] = 0;
+      else
+       pantalla[i][j] = 1;
+    }
+  }
+  i = 0;
+  do{
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+    if(pantalla[i][j] > 0)
+      pantalla[i][j] = 0;
+     else
+      pantalla[i][j] = 1; 
+    }
+  }
+   for(byte p = 0;p<10;p++)
+      actualizarMatriz();
+  k++;
+  }while( millis() - time < 1500);
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+       pantalla[i][j] = 0;
+    }
+  }
+  Lila = 1;
+}
+
+void SuperModulo(){
+  float time = millis();
+  
+   byte i, j, k;
+   k = 0;
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+      if( (i+j) % 2 > 0)
+       pantalla[i][j] = 0;
+      else
+       pantalla[i][j] = 1;
+    }
+  }
+  i = 0;
+  do{
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+    if(pantalla[i][j] > 0)
+      pantalla[i][j] = 0;
+     else
+      pantalla[i][j] = 1; 
+    }
+  }
+  for(i = 0;i<25;i++)
+  actualizarMatriz();
+  i++;
+  k++;
+  
+  }while( millis() -  time < 1000);
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+       pantalla[i][j] = 0;
+    }
+  }
+  Lila = 1;
+}
+
+void Barrido(){
+  Frecuencia = 0;
+  float t0 = millis();
+  float t1 = t0;
+  int k,i,j;
+  i = 0;
+  j = 0;
+  k = 0;
+  int v = 1;
+  for(i = 0;i<5;i++){
+    for(j = 0;j<20;j++){
+       pantalla[i][j] = 0;
+    }
+  }
+  pantalla[0][0] = 1;
+  i = 0;
+  j = 0;
+  do{
+   if( (i+j) == k)
+     if( v > 0)
+      pantalla[i][j] = 1;
+     else
+      pantalla[i][j] = 0;
+   i++;
+    if(i >= 5 ){ i = 0; j++;}
+    if(j >= 20 ) {
+      j= 0;
+      k = k+v;
+      if( k > 23)
+        v = -v;
+    } 
+    actualizarMatriz();
+    } 
+    while(k != -1);
+    Frecuencia = 1;
+    Lila = 1;
+}
+
 
 void nuevoTexto(){
  int posicion = 0;
@@ -342,11 +490,12 @@ void dibujarTexto(int offset) {
 }
 
 void actualizarMatriz() {
-  byte i;
-  for (i=0; i<5; i++) {
+  
+  for (byte i=0; i<5; i++) {
     enviarFila(i);
-    delay(2);
+    delay(Frecuencia);
   }
+  
 }
 
 void enviarFila(byte nFila) {
