@@ -168,8 +168,68 @@ const boolean alfabeto[28*5][5] = {
   { 1, 0, 0, 0 },
   { 1, 1, 1, 1 },
   
-  { 0},  //" "
-  { 0,},
+  { 1, 1, 1 },  //0
+  { 1, 0, 1 },
+  { 1, 0, 1 },
+  { 1, 0, 1 },
+  { 1, 1, 1 },
+  
+  { 1 },  //1
+  { 1 },
+  { 1 },
+  { 1 },
+  { 1 },
+  
+  { 1, 1, 1 },  //2
+  { 0, 0, 1 },
+  { 1, 1, 1 },
+  { 1, 0, 0 },
+  { 1, 1, 1 },
+
+  { 1, 1, 1 },  //3
+  { 0, 0, 1 },
+  { 1, 1, 1 },
+  { 0, 0, 1 },
+  { 1, 1, 1 },
+  
+  { 1, 0, 1 },  //4
+  { 1, 0, 1 },
+  { 1, 1, 1 },
+  { 0, 0, 1 },
+  { 0, 0, 1 },
+  
+  { 1, 1, 1 },  //5
+  { 1, 0, 0 },
+  { 1, 1, 1 },
+  { 0, 0, 1 },
+  { 1, 1, 1 },  
+  
+  { 1, 0, 0 },  //6
+  { 1, 0, 0 },
+  { 1, 1, 1 },
+  { 1, 0, 1 },
+  { 1, 1, 1 },
+  
+  { 1, 1, 1 },  //7
+  { 0, 0, 1 },
+  { 0, 0, 1 },
+  { 0, 0, 1 },
+  { 0, 0, 1 },
+
+  { 1, 1, 1 },  //8
+  { 1, 0, 1 },
+  { 1, 1, 1 },
+  { 1, 0, 1 },
+  { 1, 1, 1 },  
+  
+  { 1, 1, 1 },  //9
+  { 1, 0, 1 },
+  { 1, 1, 1 },
+  { 0, 0, 1 },
+  { 0, 0, 1 },
+  
+  { 0 },  //" "
+  { 0 },
   { 0 },
   { 0 },
   { 0 },
@@ -177,9 +237,9 @@ const boolean alfabeto[28*5][5] = {
 
 
 const int anchoCaracter[30] = {
-  4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 3, 4, 4, 5, 4, 3, 4, 1,
-//A, B, C, D, E, F, G, H, I, J, K, L, M, N, 0, P, Q, R, S, T, U, V, W, X, Y, Z," "
-//0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26
+  4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 3, 4, 4, 5, 4, 3, 4, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 1
+//A, B, C, D, E, F, G, H, I, J, K, L, M, N, 0, P, Q, R, S, T, U, V, W, X, Y, Z, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ""
+//0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36
 };
 //ABCDEFGHIJKLMNOPQRSTUVWXYZ
 char texto[256] = "Error\n";
@@ -428,6 +488,8 @@ int posicionTexto(char caracter){
  l = caracter - 'A';
  else if(caracter >= 'a' && caracter <= 'z')
  l = caracter - 'a';
+ else if(caracter >= '0' && caracter <= '9')
+ l = caracter - '0' + 26;
  else if( caracter == ' ')
  l = 26;
  return l;
@@ -463,7 +525,7 @@ void dibujarTexto(int offset) {
       //Para cada nuevo caracter se obtiene el codigo ascii
       caracter = texto[posTexto];
       //Se determina si es valido
-      if (caracter == '\n' || ( caracter < 'A' | caracter > 'Z' && caracter < 'a' | caracter > 'z') && caracter != ' ') break;
+      if (caracter == '\n' || ( caracter < '0' | caracter > '9' && caracter < 'A' | caracter > 'Z' && caracter < 'a' | caracter > 'z') && caracter != ' ') break;
       //Si es valido, entonces ubica el offset absoluto en la tabla del alfabeto
       //caracter -= 'A';
       caracter = posicionTexto(caracter);
