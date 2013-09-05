@@ -491,7 +491,7 @@ int posicionTexto(char caracter){
  else if(caracter >= '0' && caracter <= '9')
  l = caracter - '0' + 26;
  else if( caracter == ' ')
- l = 26;
+ l = 36;
  return l;
 }
 
