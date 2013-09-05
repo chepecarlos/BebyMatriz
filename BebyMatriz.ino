@@ -402,13 +402,18 @@ void Barrido(){
 
 void nuevoTexto(){
  int posicion = 0;
+ Serial.println("Nuevo");
+ Serial.print("   Texto: ");
  while( Serial.available() > 0 ){
    texto[posicion] = Serial.read();
    EEPROM.write(LongitudTexto+posicion+1, texto[posicion]);
+   Serial.print(texto[posicion]);
    posicion++;
    if(Serial.available() == 0){ 
      texto[posicion] = '\n';
-     
+     Serial.println();
+     Serial.print("   Longitud: ");
+     Serial.println(posicion);
      }
    }
    EEPROM.write(LongitudTexto,posicion); 
